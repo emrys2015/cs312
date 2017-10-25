@@ -1,4 +1,4 @@
-Name: Emrys Yang, Xuan Li.
+%Name: Emrys Yang, Xuan Li.
 
 operator(add).
 operator(sub).
