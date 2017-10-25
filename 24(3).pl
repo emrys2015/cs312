@@ -1,3 +1,5 @@
+Name: Emrys Yang, Xuan Li.
+
 operator(add).
 operator(sub).
 operator(mul).
