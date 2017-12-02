@@ -1,11 +1,11 @@
 module Main (main) where
 
+import Data.IORef
+import Control.Concurrent
 import Control.Monad
 import Control.Monad.IO.Class
-import Data.IORef
-import Graphics.UI.Gtk hiding (Action, myBacksp)
 import Graphics.UI.Gtk.Layout.Grid
-import Control.Concurrent
+import Graphics.UI.Gtk hiding (Action, myBacksp)
 import Graphics.UI.Gtk.Buttons.Button
 
 
@@ -15,13 +15,12 @@ main = do
   void initGUI
   window <- windowNew
   set window [ windowTitle         := "Calculator ©️(Emrys & Lydia)"
-             , windowResizable     := True
              , windowDefaultWidth  := 260
              , windowDefaultHeight := 380 ]
 
   display <- entryNew
   set display [ entryEditable := False
-              , entryXalign   := 1 -- makes contents right-aligned
+              , entryXalign   := 1
               , entryText     := "0" ]
 
   grid <- gridNew
@@ -87,7 +86,7 @@ mybuttonAct f (Power          a) = Power          (f a)
 mybuttonAct f (Module         a) = Module         (f a)
 mybuttonAct f (Percent        a) = Percent        (f a)
 
--- Get second argument from 'Action'.
+-- Get a second argument from my action.
 myArgu2 :: Action -> String
 myArgu2 (Addition       a) = a
 myArgu2 (Subtraction    a) = a
@@ -163,7 +162,7 @@ myClearCurr (Value x action) =
 myClear :: Value -> Value
 myClear = const (Value "" Nothing)
 
--- Check current state of calculator and implement functions
+-- Evaluate current calculator's state putting result in place of first.
 myFuncBody :: Value -> Value
 myFuncBody (Value x action) =
   case action of
@@ -173,12 +172,12 @@ myFuncBody (Value x action) =
         then Value x action
         else Value result Nothing
           where
-            g  :: String -> Double
-            g ""       = 0
-            g ('.':xs) = g ('0':'.':xs)
-            g xs       = read (reverse xs)
-            x' = g x
-            y' = g (myArgu2 a)
+            r  :: String -> Double
+            r ""       = 0
+            r ('.':xs) = r ('0':'.':xs)
+            r xs       = read (reverse xs)
+            x' = r x
+            y' = r (myArgu2 a)
             result = reverse . show $
               case a of
                 Addition       _ -> x' + y'
@@ -188,7 +187,7 @@ myFuncBody (Value x action) =
                 Power          _ -> x' ^ (floor y')
                 Module         _ -> fromIntegral ((floor x') `mod` (floor y'))
                 Percent        _ -> x' * y'
-
+                
 -- Make my new button and put it into correct position on mycalculator.
 myNewBtn
   :: IORef Value       -- IORef :: calculator state
