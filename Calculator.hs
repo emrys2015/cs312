@@ -7,6 +7,7 @@ import Control.Monad.IO.Class
 import Graphics.UI.Gtk.Layout.Grid
 import Graphics.UI.Gtk hiding (Action, myBacksp)
 import Graphics.UI.Gtk.Buttons.Button
+import Graphics.UI.Gtk.Gdk.EventM
 
 
 main :: IO ()
